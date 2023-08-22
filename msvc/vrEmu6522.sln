@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.31605.320
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "vrEmu6522", "vrEmu6522\vrEmu6522.vcxproj", "{B970D82F-3E88-4098-AFB3-2649278DE639}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B970D82F-3E88-4098-AFB3-2649278DE639}.Debug|x64.ActiveCfg = Debug|x64
+		{B970D82F-3E88-4098-AFB3-2649278DE639}.Debug|x64.Build.0 = Debug|x64
+		{B970D82F-3E88-4098-AFB3-2649278DE639}.Release|x64.ActiveCfg = Release|x64
+		{B970D82F-3E88-4098-AFB3-2649278DE639}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {81073FED-1E15-464D-83D9-D0486882928A}
+	EndGlobalSection
+EndGlobal
