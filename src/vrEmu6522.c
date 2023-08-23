@@ -36,7 +36,8 @@ struct vrEmu6522_s
   uint8_t reg[16];
 
   bool t1Active;
-  
+  bool t2Active;
+
   vrEmu6522Interrupt intPin;
 
 
@@ -86,12 +87,12 @@ inline static void viaIfrSetBit(VrEmu6522* vr6522, uint8_t bit)
 }
 inline static void viaIfrResetBit(VrEmu6522* vr6522, uint8_t bit)
 {
-  bit = bit & 0x7f;
+  bit &= 0x7f;
   if (bit)
   {
     vr6522->reg[VIA_REG_IFR] &= ~bit;
 
-    if ((bit & 0x7f) == 0)
+    if ((vr6522->reg[VIA_REG_IFR] & 0x7f) == 0)
     {
       vr6522->reg[VIA_REG_IFR] = 0;
     }
@@ -147,6 +148,7 @@ VR_EMU_6522_DLLEXPORT void vrEmu6522Reset(VrEmu6522* vr6522)
     }
 
     vr6522->t1Active = false;
+    vr6522->t2Active = false;
 
     /* initialization */
     vr6522->intPin = IntCleared;
@@ -173,6 +175,16 @@ VR_EMU_6522_DLLEXPORT void vrEmu6522Write(VrEmu6522* vr6522, uint8_t addr, uint8
       viaIfrResetBit(vr6522, VIA_IFR_T1);
       vr6522->t1Active = true;
       break;
+
+    case VIA_REG_T2C_H:
+      viaIfrResetBit(vr6522, VIA_IFR_T2);
+      vr6522->t2Active = true;
+      break;
+
+    case VIA_REG_IFR:
+      viaIfrResetBit(vr6522, data);
+      data = vr6522->reg[reg];
+      break;
   }
 
   vr6522->reg[reg] = data;
@@ -190,6 +202,13 @@ VR_EMU_6522_DLLEXPORT uint8_t vrEmu6522Read(VrEmu6522* vr6522, uint8_t addr)
   {
     case VIA_REG_T1C_L:
       viaIfrResetBit(vr6522, VIA_IFR_T1);
+      break;
+
+    case VIA_REG_T2C_L:
+      vr6522->t2Active = false;
+      viaIfrResetBit(vr6522, VIA_IFR_T2);
+      break;
+
   }
 
   return value;
@@ -216,13 +235,22 @@ VR_EMU_6522_DLLEXPORT void __time_critical_func(vrEmu6522Tick)(VrEmu6522* vr6522
         vr6522->reg[VIA_REG_T1C_L] = vr6522->reg[VIA_REG_T1L_L];
         vr6522->reg[VIA_REG_T1C_H] = vr6522->reg[VIA_REG_T1L_H];
       }
-      else
-      {
-        vr6522->t1Active = false;
-      }
     }
   }
 
+  if (vr6522->t2Active)
+  {
+    uint16_t t2 = (vr6522->reg[VIA_REG_T2C_H] << 8) | vr6522->reg[VIA_REG_T2C_L];
+    --t2;
+    vr6522->reg[VIA_REG_T2C_H] = (t2 & 0xff00) >> 8;
+    vr6522->reg[VIA_REG_T2C_L] = (t2 & 0x00ff);
+
+    if (t2 == 0)
+    {
+      viaIfrSetBit(vr6522, VIA_IFR_T2);
+      // one-shot just continues counting (from 0xfff)
+    }
+  }
 
   vr6522->intPin = vr6522->reg[VIA_REG_IFR] & 0x80 ? IntRequested : IntCleared;
 }
