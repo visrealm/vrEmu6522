@@ -87,6 +87,11 @@ VR_EMU_6522_DLLEXPORT void vrEmu6522Write(VrEmu6522* vr6522, uint8_t addr, uint8
  */
 VR_EMU_6522_DLLEXPORT uint8_t vrEmu6522Read(VrEmu6522* vr6522, uint8_t addr);
 
+/*
+ * read from the via (for debug - don't change the state)
+ */
+VR_EMU_6522_DLLEXPORT uint8_t vrEmu6522ReadDbg(VrEmu6522* vr6522, uint8_t addr);
+
 
 /*
  * a single clock tick

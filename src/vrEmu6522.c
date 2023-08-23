@@ -232,6 +232,10 @@ VR_EMU_6522_DLLEXPORT uint8_t vrEmu6522Read(VrEmu6522* vr6522, uint8_t addr)
   return value;
 }
 
+VR_EMU_6522_DLLEXPORT uint8_t vrEmu6522ReadDbg(VrEmu6522* vr6522, uint8_t addr)
+{
+  return vr6522->reg[addr & 0x0f];
+}
 
 /* 
  * a single clock tick
