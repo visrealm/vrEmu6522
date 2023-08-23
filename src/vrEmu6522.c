@@ -77,26 +77,39 @@ struct vrEmu6522_s
 /* ------------------------------------------------------------------
  *  HELPER FUNCTIONS
  * ----------------------------------------------------------------*/
+inline static void viaIfrSetIrq(VrEmu6522* vr6522)
+{
+  uint8_t ier = vr6522->reg[VIA_REG_IER] & 0x7f;
+  uint8_t ifr = vr6522->reg[VIA_REG_IFR] & 0x7f;
+
+  if (ier & ifr) ifr |= 0x80;
+
+  vr6522->reg[VIA_REG_IFR] = ifr;
+}
+
 inline static void viaIfrSetBit(VrEmu6522* vr6522, uint8_t bit)
 {
-  bit = bit & 0x7f;
-  if (bit)
-  {
-    vr6522->reg[VIA_REG_IFR] |= bit | 0x80;
-  }
+  vr6522->reg[VIA_REG_IFR] |= bit & 0x7f;
+  viaIfrSetIrq(vr6522);
 }
+
 inline static void viaIfrResetBit(VrEmu6522* vr6522, uint8_t bit)
 {
-  bit &= 0x7f;
-  if (bit)
-  {
-    vr6522->reg[VIA_REG_IFR] &= ~bit;
+  vr6522->reg[VIA_REG_IFR] &= ~(bit & 0x7f);
+  viaIfrSetIrq(vr6522);
+}
 
-    if ((vr6522->reg[VIA_REG_IFR] & 0x7f) == 0)
-    {
-      vr6522->reg[VIA_REG_IFR] = 0;
-    }
+inline static void viaIerSet(VrEmu6522* vr6522, uint8_t bit)
+{
+  if (bit & 0x80)
+  {
+    vr6522->reg[VIA_REG_IER] |= 0x80 | bit;
   }
+  else
+  {
+    vr6522->reg[VIA_REG_IER] &= 0x80 | ~bit;
+  }
+
 }
 
 
@@ -185,6 +198,11 @@ VR_EMU_6522_DLLEXPORT void vrEmu6522Write(VrEmu6522* vr6522, uint8_t addr, uint8
       viaIfrResetBit(vr6522, data);
       data = vr6522->reg[reg];
       break;
+
+    case VIA_REG_IER:
+      viaIerSet(vr6522, data);
+      data = vr6522->reg[reg];
+      break;
   }
 
   vr6522->reg[reg] = data;
@@ -248,7 +266,7 @@ VR_EMU_6522_DLLEXPORT void __time_critical_func(vrEmu6522Tick)(VrEmu6522* vr6522
     if (t2 == 0)
     {
       viaIfrSetBit(vr6522, VIA_IFR_T2);
-      // one-shot just continues counting (from 0xfff)
+      // one-shot just continues counting (from 0xffff)
     }
   }
 
