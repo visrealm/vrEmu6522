@@ -1,6 +1,6 @@
 # vrEmu6522
 
-![MSBuild-badge](https://github.com/visrealm/vrEmu6522/actions/workflows/msbuild.yml/badge.svg)
+![build-win64-badge](https://github.com/visrealm/vrEmu6522/actions/workflows/build-win64.yml/badge.svg)
 
 6522/65C22 emulator written in standard C99 with no external dependencies.
 
