@@ -19,21 +19,22 @@
  * VR_6522_EMU_COMPILING_DLL:    When compiling vrEmuTms9918 as a DLL
  * VR_6522_EMU_STATIC:           When linking vrEmu6522 statically in your executable
  */
-
-#if VR_6522_EMU_COMPILING_DLL
+ 
+#if __EMSCRIPTEN__
+  #include <emscripten.h>
+  #define VR_EMU_6522_DLLEXPORT EMSCRIPTEN_KEEPALIVE
+#elif VR_6522_EMU_COMPILING_DLL
   #define VR_EMU_6522_DLLEXPORT __declspec(dllexport)
-#elif VR_6522_EMU_STATIC
+#elif defined WIN32 && !defined VR_6522_EMU_STATIC
+  #define VR_EMU_6522_DLLEXPORT __declspec(dllimport)
+#else
   #ifdef __cplusplus
     #define VR_EMU_6522_DLLEXPORT extern "C"
   #else
     #define VR_EMU_6522_DLLEXPORT extern
   #endif
-#elif __EMSCRIPTEN__
-  #include <emscripten.h>
-  #define VR_EMU_6522_DLLEXPORT EMSCRIPTEN_KEEPALIVE
-#else
-  #define VR_EMU_6522_DLLEXPORT __declspec(dllimport)
 #endif
+
 
 #include <stdint.h>
 #include <stdbool.h>  
