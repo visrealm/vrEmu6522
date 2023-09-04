@@ -23,12 +23,9 @@
 #endif
 
 
-#pragma warning(disable : 4100)
-
-
-/* ------------------------------------------------------------------
- * PRIVATE DATA STRUCTURE
- */
+ /* ------------------------------------------------------------------
+  * PRIVATE DATA STRUCTURE
+  */
 struct vrEmu6522_s
 {
   vrEmu6522Model model;
@@ -74,9 +71,9 @@ struct vrEmu6522_s
 #define VIA_IFR_T1  (1 << 6)
 #define VIA_IFR_IRQ (1 << 7)
 
-/* ------------------------------------------------------------------
- *  HELPER FUNCTIONS
- * ----------------------------------------------------------------*/
+ /* ------------------------------------------------------------------
+  *  HELPER FUNCTIONS
+  * ----------------------------------------------------------------*/
 inline static void viaIfrSetIrq(VrEmu6522* vr6522)
 {
   uint8_t ier = vr6522->reg[VIA_REG_IER] & 0x7f;
@@ -127,12 +124,12 @@ VR_EMU_6522_DLLEXPORT VrEmu6522* vrEmu6522New(
     vr6522->model = model;
 
     vrEmu6522Reset(vr6522);
- }
+  }
 
   return vr6522;
 }
 
-/* 
+/*
  * destroy a 6522
  */
 VR_EMU_6522_DLLEXPORT void vrEmu6522Destroy(VrEmu6522* vr6522)
@@ -144,7 +141,7 @@ VR_EMU_6522_DLLEXPORT void vrEmu6522Destroy(VrEmu6522* vr6522)
   }
 }
 
-/* 
+/*
  * reset the 6522
  */
 VR_EMU_6522_DLLEXPORT void vrEmu6522Reset(VrEmu6522* vr6522)
@@ -238,7 +235,7 @@ VR_EMU_6522_DLLEXPORT uint8_t vrEmu6522ReadDbg(VrEmu6522* vr6522, uint8_t addr)
   return vr6522->reg[addr & 0x0f];
 }
 
-/* 
+/*
  * a single clock tick
  */
 VR_EMU_6522_DLLEXPORT void __time_critical_func(vrEmu6522Tick)(VrEmu6522* vr6522)
