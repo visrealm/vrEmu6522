@@ -54,6 +54,9 @@ typedef enum
   VIA_65C22,    /* Standard CMOS 65C22 */
 } vrEmu6522Model;
 
+#ifdef _VR_EMU_6502_H_
+typedef vrEmu6502Interrupt vrEmu6522Interrupt;
+#else
 typedef enum
 {
   IntRequested,
@@ -61,7 +64,7 @@ typedef enum
   IntLow = IntRequested,
   IntHigh = IntCleared
 } vrEmu6522Interrupt;
-
+#endif
 
 /*
  * create a new 6522
@@ -98,6 +101,11 @@ VR_EMU_6522_DLLEXPORT uint8_t vrEmu6522ReadDbg(VrEmu6522* vr6522, uint8_t addr);
  * a single clock tick
  */
 VR_EMU_6522_DLLEXPORT void vrEmu6522Tick(VrEmu6522* vr6522);
+
+/*
+ * multiple clock ticks
+ */
+VR_EMU_6522_DLLEXPORT void vrEmu6522Ticks(VrEmu6522* vr6522, uint8_t ticks);
 
 /*
  * returns a pointer to the interrupt signal.
